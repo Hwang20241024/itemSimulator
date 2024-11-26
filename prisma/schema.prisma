@@ -9,6 +9,113 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
+
+//==설계 흐름==//
+// 1. 계정   →  캐릭터      [1:n]
+// 2. 케릭터 →  케릭터 능력 [1:1]
+// 3. 케릭터 →  인벤토리    [n:m]
+//           →  장착아이템  [n:m]
+// 4. 아이템 →  인벤토리    [1:n]
+
+//==정규화==//
+// 제 1 정규화(1NF) : 테이블에 중복된 컬럼 없음.              (완료)
+// 제 2 정규화(2NF) : 복합기본키를 사용해야함                 (완료)
+// 제 3 정규화(3NF) : 기본키 외의 의존하는 속성 없음          (완료)
+// 제 4 정규화(4NF) : 복합 기본키 세분화 (복합 기본키 세분화) (    )             
+// 제 5 정규화(5NF) : 중복 조인 없애기 (조인 종속성 해결)     (    )
+
+
+// 계정 테이블
+model Accounts {
+  accountsId   String @id @default(uuid()) @map("accountsId")
+  username     String @unique @map("username")
+  password     String @map("password")
+  refreshToken String @db.Text @map("refreshToken") 
+
+  characters Characters[]
+
+  @@map("Accounts")
+}
+
+// 케릭터 테이블
+model Characters {
+  characterId    Int      @id @default(autoincrement()) @map("characterId")
+  accountsId     String   @map("accountsId")
+  charactersName String   @unique() @map("charactersName")
+  money          Int?     @map("money")
+  createdAt      DateTime @default(now()) @map("createdAt")
+  updatedAt      DateTime @updatedAt @map("updatedAt")
+  
+  charactersStats        CharactersStats? 
+  characterInventories   CharacterInventories[]  
+  CharacterEquippedItems CharacterEquippedItems[]
+
+  accounts Accounts @relation(fields: [accountsId], references: [accountsId], onDelete: Cascade)
+  
+  @@unique([accountsId, charactersName]) // 복합유니크 계정당 케릭터 중복이 가능하다.
+  @@map("Characters")                  
+}
+
+// 케릭터능력 테이블
+model CharactersStats {
+  charactersStatsId Int   @id @default(autoincrement()) @map("charactersStatsId")
+  characterId       Int   @unique @map("characterId")
+  stats             Json  @map("stats")
+
+  characters Characters @relation(fields: [characterId], references: [characterId], onDelete: Cascade )
+  @@map("CharactersStats")
+}
+
+// 아이템 테이블
+model Items {
+  itemId   Int    @id @default(autoincrement()) @map("itemId")
+  itemName String @unique @map("itemName")
+  price    Int?   @map("price")
+
+  itemStats ItemStats?
+  characterInventories CharacterInventories[]
+  
+  @@map("Items")
+}
+
+// 아이템능력 테이블
+model ItemStats {
+  itemStatsId Int   @id @default(autoincrement()) @map("itemStatsId")
+  itemId      Int   @unique @map("itemId")
+  stats       Json  @map("stats")
+  
+  items Items @relation(fields: [itemId], references: [itemId], onDelete: Cascade)
+  
+  @@map("ItemStats")
+}
+
+// 케릭터 인벤토리 테이블
+model CharacterInventories {
+  characterInventoriesId Int    @id @default(autoincrement()) @map("characterInventoriesId")
+  characterId            Int    @map("characterId")
+  itemId                 Int    @map("itemId")
+
+  characterEquippedItems CharacterEquippedItems[]
+
+  characters Characters @relation(fields: [characterId], references: [characterId], onDelete: Cascade)
+  items      Items      @relation(fields: [itemId], references: [itemId], onDelete: Cascade)
+  
+  @@map("CharacterInventories")
+}
+
+// 케릭터 장착 테이블 
+model CharacterEquippedItems{
+  characterEquippedItemId Int    @id @default(autoincrement()) @map("itemStatsId")
+  characterInventoriesId Int    @map("characterInventoriesId")
+  characterId            Int    @map("characterId")
+  itemId                 Int    @map("itemId")
+
+  characters           Characters           @relation(fields: [characterId], references: [characterId], onDelete: Cascade)
+  characterInventories CharacterInventories @relation(fields: [characterInventoriesId], references: [characterInventoriesId], onDelete: Cascade)
+  
+  @@map("CharacterEquippedItems")
+}
+
