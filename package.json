@@ -5,8 +5,8 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "format": "prettier --write *.js **/*.js",
-    "dev": "nodemon index.js"
+    "format": "prettier --write src/**/*.js",
+    "dev": "nodemon src/ndex.js"
   },
   "devDependencies": {
     "dotenv": "^16.4.5",
