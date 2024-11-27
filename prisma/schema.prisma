@@ -31,7 +31,7 @@ datasource db {
 // 계정 테이블
 model Accounts {
   accountsId   String @id @default(uuid()) @map("accountsId")
-  username     String @unique @map("username")
+  userName     String @unique @map("username")
   password     String @map("password")
   refreshToken String @db.Text @map("refreshToken") 
 

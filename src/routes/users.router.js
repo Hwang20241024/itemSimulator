@@ -8,9 +8,9 @@ import dotenv from 'dotenv';
 // 모듈 import
 import { prisma } from '../utils/prisma/index.js';
 import { PrismaClient } from '@prisma/client';
-import { authMiddleware } from '../middlewares/authHandler.js';
+import authMiddleware  from '../middlewares/authHandler.js';
 import CustomError from '../utils/errors/customError.js'
-import { error } from 'winston';
+import  error  from 'winston';
 
 // 라우터 생성.
 const router = express.Router();
@@ -21,13 +21,13 @@ dotenv.config();
 /** 아이템시뮬레이터 - 사용자 회원가입 API **/
 router.post('/sign-up', async (req, res, next) => {
   //// 1. 리퀘스트의 바디 정보를 받는다.
-  const { username, password } = req.body;
+  const { userName, password } = req.body;
 
   //// 2. 이미 회원 가입한 회원인지 확인하자!
   // (아이디는 db에 "유니크"로 설정되어 있어 findUnique 함수를 사용했다.)
   const userExists = await prisma.accounts.findUnique({
     where: {
-      username: username, // db에 Accounts 테이블에 "username" 있는지 확인.
+      userName: userName, // db에 Accounts 테이블에 "userName" 있는지 확인.
     },
   });
   // 2-1. 이미 있다면 회원가입은 하면안된다.
@@ -40,7 +40,7 @@ router.post('/sign-up', async (req, res, next) => {
   const isValidUserId = Joi.string().pattern(
     /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]+$/
   ).required() ;
-  const userNameSchema  = isValidUserId.validate(username);
+  const userNameSchema  = isValidUserId.validate(userName);
 
   if (userNameSchema.error) {
     console.log(userNameSchema.error.details);
@@ -52,12 +52,12 @@ router.post('/sign-up', async (req, res, next) => {
 
   ////5. 토큰 발행하자.
   const accessToken = createToken(
-    username,
+    userName,
     process.env.ACCESS_TOKEN_SECRET_KEY,
     '10s'
   );
   const refreshToken = createToken(
-    username,
+    userName,
     process.env.REFRESH_TOKEN_SECRET_KEY,
     '7d'
   );
@@ -72,12 +72,13 @@ router.post('/sign-up', async (req, res, next) => {
     async (tx) => {
       await tx.accounts.create({
         data: {
-          username: username,
+          userName: userName,
           password: hashedPassword,
           refreshToken: refreshToken,
         },
       });  
     },);
+    global.refreshTokens[refreshToken] = userName;
     return res.status(201).json({message: '회원가입이 완료되었습니다.'})
   } catch(error){
     return next(new CustomError('회원가입 중 문제가 발생했습니다.', 500));
@@ -85,12 +86,15 @@ router.post('/sign-up', async (req, res, next) => {
 });
 
 /** Token을 생성하는 함수 **/
-function createToken(username, secret_key, time) {
+function createToken(userName, secret_key, time) {
   const accessToken = jwt.sign(
-    { username: username }, // 데이터 삽입.
+    { userName: userName }, // 데이터 삽입.
     secret_key, // Token "비밀"키
     { expiresIn: time } // 유지시간
   );
 
   return accessToken;
 }
+
+
+export default router;

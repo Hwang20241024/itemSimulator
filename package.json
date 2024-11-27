@@ -6,7 +6,7 @@
   "type": "module",
   "scripts": {
     "format": "prettier --write src/**/*.js",
-    "dev": "nodemon src/ndex.js"
+    "dev": "nodemon src/app.js"
   },
   "devDependencies": {
     "dotenv": "^16.4.5",

@@ -22,28 +22,26 @@ export default async function (req, res, next) {
     /*예외처리*/
     // 1. 토큰이 존제 하는지 없는지 확인.
     if (!authorization) {
-      throw new Error('로그인이 필요합니다.');
+      return next(new CustomError('로그인이 필요합니다.', 401));
     }
     // 2. 토큰이 "Bearer"토큰 인지 확인.
     const [tokenType, token] = authorization.split(' ');
     if (tokenType !== 'Bearer') {
-      throw new Error('토큰 타입이 일치하지 않습니다.');
+      return next(new CustomError('토큰 타입이 일치하지 않습니다.', 401));
     }
     // 3. 토큰 검증 및 디코딩
     const decodedToken = jwt.verify(token, 'custom-secret-key');
-    if (!decodedToken) {
-      throw new Error('잘못된 토큰입니다.');
+    
+    // 4. 현재 토큰의 정보를 가진 db 리플레시 토큰 데이터가 없다면?
+    if(global.refreshTokens.find(user => user.userName === decodedToken.userName)) {
+      return next(new CustomError('잘못된 토큰 입니다.', 401));
     }
-    // 4. 현재 토큰에 저장되어있느 정보를 가진 db 데이터가 없다면?
 
     /*여기까지 오면 안전!*/
-    req.user = user;
+    req.user = decodedToken.userName;
     next();
   } catch (error) {
     // 인증 실패하면 에러 반환.
-    next(error);
-    return res
-      .status(401)
-      .json({ message: error.message || '비정상적인 요청' });
+    return next(new CustomError('비정상적인 요청.', 401));
   }
 }
