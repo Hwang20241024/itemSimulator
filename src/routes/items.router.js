@@ -81,10 +81,29 @@ router.patch("/items/update/:itemId", async (req, res, next) => {
   return res.status(201).json({message: ` [${itemExists.itemName}] 아이템 수정 완료.`, } )
 
 })
-
-/** 아이템시뮬레이터 - 아이템 상세 조회 API **/
+/** 아이템시뮬레이터 - 아이템 목록 조회 API **/
 router.get("/items/get", async (req, res, next) => {
   const getItems = await prisma.items.findMany({
+    select: {
+      itemId: true,
+      itemName: true,
+      price: true
+    }
+  });
+
+
+  return res.status(201).json(getItems)
+
+
+})
+
+/** 아이템시뮬레이터 - 아이템 상세 조회 API **/
+router.get("/items/get/:item", async (req, res, next) => {
+  const { item } = req.params;
+  const getItem = await prisma.items.findFirst({
+    where: {
+      itemId: +item , // db에 Accounts 테이블에 "userName" 있는지 확인.
+    },
     include: {
       itemStats: {
         select: {
@@ -94,15 +113,19 @@ router.get("/items/get", async (req, res, next) => {
     },
   });
 
-  // 원하는 형태로 데이터 구조 변경
-  const formattedItems = getItems.map(item => ({
-    itemId: item.itemId,
-    itemName: item.itemName,
-    stats: item.itemStats ? item.itemStats.stats : {}, // stats가 존재할 경우만 포함
-    price: item.price
-  }));
+  if(!getItem) {
+    return next(new CustomError('없는 아이템입니다.', 409));
+  }
 
-  return res.status(201).json(formattedItems)
+  // 원하는 형태로 데이터 구조 변경
+  const itemData  = {
+    itemId: getItem.itemId,
+    itemName: getItem.itemName,
+    stats: getItem.itemStats ? getItem.itemStats.stats : {}, // stats가 존재할 경우만 포함
+    price: getItem.price
+  };
+
+  return res.status(201).json(itemData )
 
 
 })
