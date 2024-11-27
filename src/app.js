@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 // 모듈 import
 import ErrorHandlingMiddleware from './middlewares/errorHandler.js';
 import UsersRouter from './routes/users.router.js';
+import ItemsRouter from './routes/items.router.js';
 import { prisma } from './utils/prisma/index.js';
 
 const app = express();
@@ -42,7 +43,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 // 라우터 연결
-app.use('/itemSimulator', [UsersRouter]);
+app.use('/itemSimulator', [UsersRouter, ItemsRouter]);
 
 // 에러 처리 미들 웨어. 
 app.use(ErrorHandlingMiddleware);

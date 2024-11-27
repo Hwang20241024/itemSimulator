@@ -19,10 +19,7 @@ import CustomError from '../utils/errors/customError.js';
 
 export default async function (req, res, next) {
   const authorization = req.headers['authorization'];
-  const authorization2 = req.headers['authorization2'];
 
-  console.log(authorization);
-  console.log(authorization2);
   try {
     /*예외처리*/
     // 1. 토큰이 존제 하는지 없는지 확인.
@@ -47,6 +44,7 @@ export default async function (req, res, next) {
       const isUserExist = global.refreshTokens.some(
         (user) => user.userName === decodedToken.userName
       );
+      console.log(isUserExist.userName);
 
       if (!isUserExist) {
         console.log('엑세스: ' + decodedToken.userName);
@@ -68,7 +66,9 @@ export default async function (req, res, next) {
         );
 
         if (!refreshToken) {
-          return next(new CustomError('리프레시 토큰이 유효하지 않습니다.', 401));
+          return next(
+            new CustomError('리프레시 토큰이 유효하지 않습니다.', 401)
+          );
         }
 
         const accessToken = jwt.sign(
@@ -79,7 +79,10 @@ export default async function (req, res, next) {
         console.log('토큰: 갱신완료! ');
         res.setHeader('Authorization', `Bearer ${accessToken}`);
 
-        return res.json({ message: '토큰 갱신 완료', accessToken });  // 클라이언트에게 새로운 토큰을 반환
+        //req.user = decodedToken;
+        next();
+
+        return res.json({ message: '토큰 갱신 완료', accessToken }); // 클라이언트에게 새로운 토큰을 반환
       }
     }
   } catch (error) {

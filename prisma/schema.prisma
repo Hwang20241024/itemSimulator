@@ -44,7 +44,7 @@ model Accounts {
 model Characters {
   characterId    Int      @id @default(autoincrement()) @map("characterId")
   accountsId     String   @map("accountsId")
-  charactersName String   @unique() @map("charactersName")
+  charactersName String   @unique @map("charactersName")
   money          Int?     @map("money")
   createdAt      DateTime @default(now()) @map("createdAt")
   updatedAt      DateTime @updatedAt @map("updatedAt")
@@ -72,7 +72,7 @@ model CharactersStats {
 // 아이템 테이블
 model Items {
   itemId   Int    @id @default(autoincrement()) @map("itemId")
-  itemName String @unique @map("itemName")
+  itemName String @map("itemName")
   price    Int?   @map("price")
 
   itemStats ItemStats?
