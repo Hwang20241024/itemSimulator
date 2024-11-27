@@ -5,7 +5,7 @@ export default function (err, req, res, next) {
   if (err instanceof CustomError) {
     // CustomError라면 statusCode와 message로 응답
     console.error(err);
-    // console.error(err.name); // 디버깅용
+    console.error(err.name); // 디버깅용
     return res.status(err.statusCode).json({ message: err.message });
   }
   // 커스텀 에러가 아니라면?

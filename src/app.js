@@ -32,6 +32,7 @@ if (!global.hasRun) {
     }
     console.log('서버 최초 실행, DB 세팅중...');
   }
+  //console.log(global.refreshTokens);
 
   console.log('서버 최초 실행, DB 초기화 완료...');
   global.hasRun = true;
