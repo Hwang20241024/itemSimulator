@@ -1,16 +1,11 @@
 // 라이브러리 import
 import express from 'express';
-import bcrypt from 'bcrypt';
-import Joi from 'joi';
-import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 
 // 모듈 import
 import { prisma } from '../utils/prisma/index.js';
-import { PrismaClient } from '@prisma/client';
 import authMiddleware from '../middlewares/authHandler.js';
 import CustomError from '../utils/errors/customError.js';
-//import  error  from 'winston';
 
 // 라우터 생성.
 const router = express.Router();
@@ -49,7 +44,7 @@ router.get('/inv/:characterId', authMiddleware, async (req, res, next) => {
 
       // 2-2. 케릭터가 없다면?
       if (!character) {
-        throw new CustomError('해당유저는 케릭터가 없습니다.', 409);
+        throw new CustomError('본인의 케릭터로 접속해주세요.', 409);
       }
 
       //// 3. 인벤토리에 아이템 있는지 없는지 확인.
@@ -108,7 +103,7 @@ router.get('/inv/:characterId/equipped-items', async (req, res, next) => {
 
       // 1-2. 케릭터가 없다면?
       if (!character) {
-        throw new CustomError('케릭터가 존재하지않습니다..', 409);
+        throw new CustomError('본인의 케릭터로 접속해주세요.', 409);
       }
 
       const characterEquippedItems =
@@ -163,9 +158,9 @@ router.post(
   '/inv/:characterId/equip',
   authMiddleware,
   async (req, res, next) => {
-    const { characterId } = req.params; // URL 파라미터 가져와!
-    const { userName } = req.user; // 토큰 정보 가져오세요~
-    const { itemId } = req.body; // 바디에서 정보 가져오세요.
+    const { characterId } = req.params; 
+    const { userName } = req.user; 
+    const { itemId } = req.body; 
 
     try {
       const transaction = await prisma.$transaction(async (prisma) => {
@@ -197,7 +192,7 @@ router.post(
 
         // 2-2. 케릭터가 없다면?
         if (!character) {
-          throw new CustomError('해당유저는 케릭터가 없습니다.', 409);
+          throw new CustomError('본인의 케릭터로 접속해주세요.', 409);
         }
 
         //// 3. 인벤토리에 아이템 있는지 없는지 확인.
@@ -265,10 +260,7 @@ router.post(
             },
           });
         }
-        console.log('=================================================');
-        console.log(character.charactersStats.stats);
-        console.log(inventories.items.itemStats.stats);
-        console.log('=================================================');
+        
         //// 6. 케릭터 능력치 업데이트
         const updateStats = {
           power:
@@ -357,7 +349,7 @@ router.delete(
 
         // 2-2. 케릭터가 없다면?
         if (!character) {
-          throw new CustomError('해당유저는 케릭터가 없습니다.', 409);
+          throw new CustomError('본인의 케릭터로 접속해주세요.', 409);
         }
 
         //// 3.장착 아이템 있는지 없는지 확인.
@@ -458,7 +450,7 @@ router.delete(
           power: updateCharacters.charactersStats.stats['health'],
         };
 
-        // updateCharacters를 제외한 나머지는 업데이트 및 삭제 이전에 불러온 데이터.
+        // equipInventories를 제외한 나머지는 업데이트 및 삭제 이전에 불러온 데이터.
         return {
           BEFORE: beforeData,
           ITEMNAME: equipInventories.characterInventories.items.itemName,
@@ -475,4 +467,4 @@ router.delete(
 );
 
 export default router;
-//unequip
+

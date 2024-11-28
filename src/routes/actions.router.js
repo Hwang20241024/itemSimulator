@@ -1,16 +1,12 @@
 // 라이브러리 import
 import express from 'express';
-import bcrypt from 'bcrypt';
-import Joi from 'joi';
-import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 
 // 모듈 import
 import { prisma } from '../utils/prisma/index.js';
-import { PrismaClient } from '@prisma/client';
 import authMiddleware from '../middlewares/authHandler.js';
 import CustomError from '../utils/errors/customError.js';
-//import  error  from 'winston';
+
 
 // 라우터 생성.
 const router = express.Router();
@@ -58,7 +54,6 @@ router.get(
         if (!character) {
           throw new CustomError('해당유저는 케릭터가 없습니다.', 409);
         }
-
 
         //// 3. 돈을 추가하자.
         const updateCharacter = await prisma.characters.update({
