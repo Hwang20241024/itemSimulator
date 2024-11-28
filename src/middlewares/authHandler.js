@@ -32,7 +32,7 @@ export default async function (req, res, next) {
     if (tokenType !== 'Bearer') {
       return next(new CustomError('토큰 타입이 일치하지 않습니다.', 401));
     }
-
+    
     try {
       // 3. 토큰 검증 및 디코딩
       const decodedToken = jwt.verify(
@@ -40,11 +40,14 @@ export default async function (req, res, next) {
         process.env.ACCESS_TOKEN_SECRET_KEY
       );
 
+      console.log("여긴오냐")
+
       // 4. 현재 토큰의 정보를 가진 db 리플레시 토큰 데이터가 없다면?
       const isUserExist = global.refreshTokens.some(
         (user) => user.userName === decodedToken.userName
       );
       console.log(isUserExist.userName);
+      console.log(isUserExist);
 
       if (!isUserExist) {
         console.log('엑세스: ' + decodedToken.userName);

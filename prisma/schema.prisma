@@ -97,6 +97,7 @@ model CharacterInventories {
   characterInventoriesId Int    @id @default(autoincrement()) @map("characterInventoriesId")
   characterId            Int    @map("characterId")
   itemId                 Int    @map("itemId")
+  count                  Int    @default(0) @map("count")
 
   characterEquippedItems CharacterEquippedItems[]
 

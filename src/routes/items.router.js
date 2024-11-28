@@ -22,7 +22,7 @@ dotenv.config();
 router.post('/items/add', async (req, res, next) => {
   const { itemName, stats, price } = req.body;
 
-  const itemExists = await prisma.items.findUnique({
+  const itemExists = await prisma.items.findFirst({ // 이거 수정.
     where: {
       itemName: itemName, // db에 Accounts 테이블에 "userName" 있는지 확인.
     },
@@ -127,7 +127,7 @@ router.get("/items/get/:item", async (req, res, next) => {
 
   return res.status(201).json(itemData )
 
-
 })
+
 
 export default router;

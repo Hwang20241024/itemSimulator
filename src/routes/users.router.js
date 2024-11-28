@@ -8,8 +8,8 @@ import dotenv from 'dotenv';
 // 모듈 import
 import { prisma } from '../utils/prisma/index.js';
 import { PrismaClient } from '@prisma/client';
-import authMiddleware  from '../middlewares/authHandler.js';
-import CustomError from '../utils/errors/customError.js'
+import authMiddleware from '../middlewares/authHandler.js';
+import CustomError from '../utils/errors/customError.js';
 //import  error  from 'winston';
 
 // 라우터 생성.
@@ -37,9 +37,9 @@ router.post('/sign-up', async (req, res, next) => {
 
   //// 3. 아이디 형식을 보자.("영문 + 숫자" 조합이여야한다.)
   // 3-1. 음... pattern(/^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]+$/)는 영문 조합 검사 라고 한다.
-  const isValidUserId = Joi.string().pattern(
-    /^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]+$/
-  ).required() ;
+  const isValidUserId = Joi.string()
+    .pattern(/^(?=.*[a-zA-Z])(?=.*\d)[a-zA-Z\d]+$/)
+    .required();
   const userNameSchema = isValidUserId.validate(userName);
 
   if (userNameSchema.error) {
@@ -49,7 +49,7 @@ router.post('/sign-up', async (req, res, next) => {
 
   //// 4. 비밀번호.
   // 4-1. 비밀번호 길이 검증.
-  const user_password  = Joi.string().min(6);
+  const user_password = Joi.string().min(6);
   const passwordSchema = user_password.validate(password);
   if (passwordSchema.error) {
     return next(new CustomError('비밀번호는 6자리 이상이어야 합니다.', 422));
@@ -80,20 +80,19 @@ router.post('/sign-up', async (req, res, next) => {
   res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: false });
 
   //// 6. 여기까지 오면 이상 없는 것. db에 회원 정보를 넣자
-  try{
-  await prisma.$transaction(
-    async (tx) => {
+  try {
+    await prisma.$transaction(async (tx) => {
       await tx.accounts.create({
         data: {
           userName: userName,
           password: hashedPassword,
           refreshToken: refreshToken,
         },
-      });  
-    },);
+      });
+    });
     global.refreshTokens[refreshToken] = userName;
-    return res.status(201).json({message: '회원가입이 완료되었습니다.'})
-  } catch(error){
+    return res.status(201).json({ message: '회원가입이 완료되었습니다.' });
+  } catch (error) {
     return next(new CustomError('회원가입 중 문제가 발생했습니다.', 500));
   }
 });
@@ -110,15 +109,15 @@ function createToken(userName, secret_key, time) {
 }
 
 /** 아이템시뮬레이터 - 로그인 API **/
-router.post("/sign-in", async (req, res, next) => {
+router.post('/sign-in', async (req, res, next) => {
   const { userName, password } = req.body;
   const user = await prisma.accounts.findFirst({ where: { userName } });
 
   // 로그인 검증.
   if (!user)
-    return res.status(401).json({message: '존재하지 않는 이메일입니다.'})
+    return res.status(401).json({ message: '존재하지 않는 이메일입니다.' });
   else if (!(await bcrypt.compare(password, user.password)))
-    return res.status(401).json({message: '비밀번호가 일치하지 않습니다.'})
+    return res.status(401).json({ message: '비밀번호가 일치하지 않습니다.' });
 
   // 토큰 생성.
   const accessToken = createToken(
@@ -130,14 +129,14 @@ router.post("/sign-in", async (req, res, next) => {
   // 토큰 발행.
   res.setHeader('Authorization', `Bearer ${accessToken}`);
 
-  return res.status(201).json({message: '로그인이 완료 되었습니다.'})
-})
+  return res.status(201).json({ message: '로그인이 완료 되었습니다.' });
+});
 
 /** 아이템시뮬레이터 - 캐릭터 생성 API → (JWT 인증 필요) **/
-router.post("/characters/add", authMiddleware, async (req, res, next) => {
+router.post('/characters/add', authMiddleware, async (req, res, next) => {
   const { charactersName, stats, money } = req.body;
 
-  const {userName} = req.user;
+  const { userName } = req.user;
 
   // 계정을 가져오자.
   const account = await prisma.accounts.findUnique({
@@ -160,14 +159,12 @@ router.post("/characters/add", authMiddleware, async (req, res, next) => {
     return next(new CustomError('이미 존재하는 케릭터 입니다.', 409));
   }
 
-
-
   // 케릭터 생성.
   const newCharacter = await prisma.characters.create({
     data: {
       accountsId: account.accountsId,
       charactersName: charactersName,
-      money: money,  // 초기 돈
+      money: money, // 초기 돈
     },
   });
 
@@ -175,59 +172,67 @@ router.post("/characters/add", authMiddleware, async (req, res, next) => {
   const newCharacterStats = await prisma.charactersStats.create({
     data: {
       characterId: newCharacter.characterId,
-      stats: stats,  // 기본 능력치 추가
+      stats: stats, // 기본 능력치 추가
     },
   });
-  
 
-  return res.status(201).json({message: account, character: newCharacter,stats: newCharacterStats,})
-
-})
-
+  return res
+    .status(201)
+    .json({
+      message: account,
+      character: newCharacter,
+      stats: newCharacterStats,
+    });
+});
 
 /** 아이템시뮬레이터 - 캐릭터 삭제 API → (JWT 인증 필요) **/
-router.delete("/characters/:characterId", authMiddleware, async (req, res, next) => {
-  const { characterId } = req.params;
-  const {userName} = req.user;
+router.delete(
+  '/characters/:characterId',
+  authMiddleware,
+  async (req, res, next) => {
+    const { characterId } = req.params;
+    const { userName } = req.user;
 
+    const charactersExists = await prisma.characters.findUnique({
+      where: {
+        characterId: +characterId,
+      },
+    });
+    if (!charactersExists) {
+      return next(new CustomError('삭제할 케릭터가 없습니다.', 409));
+    }
 
+    const account = await prisma.accounts.findUnique({
+      where: { userName: userName },
+    });
 
-  const charactersExists = await prisma.characters.findUnique({
-    where: {
-      characterId: +characterId, 
-    },
-  });
-  if (!charactersExists) {
-    return next(new CustomError('삭제할 케릭터가 없습니다.', 409));
+    if (account.accountsId !== charactersExists.accountsId) {
+      return next(
+        new CustomError('다른계정의 아이디는 삭제 할수 없습니다.', 409)
+      );
+    }
+
+    // 케릭터 삭제.
+    const deletedCharacter = await prisma.characters.delete({
+      where: {
+        characterId: +characterId, // 삭제할 characterId
+      },
+    });
+
+    return res
+      .status(201)
+      .json({ message: '삭제 완료.', characters: deletedCharacter });
   }
-
-  const account = await prisma.accounts.findUnique({
-    where: { userName: userName },
-  });
-
-  if(account.accountsId !== charactersExists.accountsId) {
-    return next(new CustomError('다른계정의 아이디는 삭제 할수 없습니다.', 409));
-  }
-
-  // 케릭터 삭제.
-  const deletedCharacter = await prisma.characters.delete({
-    where: {
-      characterId: +characterId, // 삭제할 characterId
-    },
-  });
-
-  return res.status(201).json({message: "삭제 완료.", characters : deletedCharacter})
-
-})
+);
 
 /** 아이템시뮬레이터 - 캐릭터 상세 조회 API **/
-router.get("/characters/:characterId", async (req, res, next)=>{
+router.get('/characters/:characterId', async (req, res, next) => {
   const { characterId } = req.params;
   const token = req.headers['authorization']?.split(' ')[1]; // Bearer 토큰에서 값 추출
-  let userName = "";
+  let userName = '';
 
-  // 토큰 검증 
-  if(token){
+  // 토큰 검증
+  if (token) {
     try {
       const decoded = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET_KEY);
       userName = decoded.userName; // 토큰에서 사용자 이름 추출
@@ -235,11 +240,11 @@ router.get("/characters/:characterId", async (req, res, next)=>{
       console.log('유효하지 않은 토큰입니다.');
     }
   }
-  
+
   // 케릭터 있나없나.
   const character = await prisma.characters.findUnique({
     where: {
-      characterId: +characterId, 
+      characterId: +characterId,
     },
     include: {
       charactersStats: {
@@ -263,7 +268,6 @@ router.get("/characters/:characterId", async (req, res, next)=>{
     return next(new CustomError('해당 계정이 존재하지 않습니다.', 404));
   }
 
-
   // 원하는 형태로 데이터 구조 변경
   const isOwner = userName && account.userName === userName; // 본인의 캐릭터인지 확인
   const response = {
@@ -276,7 +280,6 @@ router.get("/characters/:characterId", async (req, res, next)=>{
   }
 
   return res.status(200).json(response);
-
-})
+});
 
 export default router;
