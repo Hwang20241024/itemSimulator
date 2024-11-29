@@ -13,7 +13,7 @@ import { prisma } from './utils/prisma/index.js';
 
 
 const app = express();
-const PORT = 3018;
+const PORT = 3000;
 
 /*서버 최초 실행시 refreshToken "인메모리"에 추가*/
 if (!global.hasRun) {
