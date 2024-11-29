@@ -1,3 +1,97 @@
+## 과제 소개
+-- 요약 : "Node.js와 Express.js를 활용한 아이템 시뮬레이터 프로젝트입니다.
+- 1. 서버가 시작하면 인메모리에 db에 있는 refreshToken 토큰을 저장하고 
+     로그인을 하면 refreshToken으로 accesstToken을 발급합니다.
+	 그리고 다수에 api에 accesstToken으로 검증하여 api가 실행합니다.
+- 2. 프로젝트의 모든 **경로 매개변수(path parameter)**는 1부터 시작합니다.
+
+## api 
+
+# 유저
+1. /sign-up (회원가입) -POST
+2. /sign-in (로그인)   -POST
+
+# 케릭터
+1. /characters/add (케릭터 생성) -POST
+2. /characters/:characterId (케릭터 삭제) -DEL
+3. /characters/:characterId (케릭터 상세 조회) -GET
+
+# 아이템
+1. /items/add (아이템 생성) -POST
+2. /items/update/:itemId (아이템 수정.) -PTCH
+3. /items/get/:item (아이템 상세 조회) -GET
+4. /items/get (아이템 목록 조회) -GET
+
+# 인벤토리
+1. /inv/:characterId (인벤토리) -GET
+2. /inv/:characterId/equip (아이템장착) -POST
+3. /inv/:characterId/unequip(아이템헤제) -DEL
+4. /inv/:characterId/equipped-items (장착한 아이템 목록) -GET
+
+# 상점
+1. /shop/sell/:characterId/:item/:count (아이템 판매) -DEL
+2. /shop/buy/:characterId (아이템 구입) -POST
+
+
+# 기타
+1. /earn-money/:characterId (게임 머니 벌기) -GET
+
+
+## api - body
+
+1. /sign-up (회원가입) -POST
+
+{
+	"userName": 	   "test5",
+	"password": 	   "555555",
+	"confirmPassword": "555555"
+}
+
+
+2. /sign-in (로그인)   -POST
+
+{
+	"userName": 			 "test1",
+	"password": 			 "111111"
+}
+
+
+3. /characters/add (케릭터 생성) -POST
+
+{
+	"charactersName": "황2",
+	"stats": {"health": 500, "power": 100},
+	"money": 10000
+}
+
+4. /items/add (아이템 생성) -POST
+
+{
+	"itemName": "나뭇가지",
+	"stats": 	  {"health": 20, "power": 5},
+	"price": 		1000
+}
+
+5. /inv/:characterId/equip (아이템장착) -POST
+
+{
+	"itemId" : "2"
+}
+
+6. /shop/buy/:characterId (아이템 구입)
+
+[
+	{
+		"item_code": "목검",
+		"count": 		2
+	},
+	{
+		"item_code": "철검",
+		"count": 		1
+	}
+]
+
+
 ## 질문과 답변 
 
 # 암호화 방식
@@ -62,89 +156,7 @@
 이번 프로젝트에서는 많은 휴먼 에러가 발생했습니다. API 테스트 중에도 종종 Body를 보내지 않았으면서 코드를 계속 확인하는 실수를 했습니다. 데이터베이스도 복잡해서 조금 더 시간이 있었으면 좋았을 것 같다는 생각도 들었습니다. 그럼에도 불구하고, 전체적으로는 재미있게 진행할 수 있었습니다.
 
 
-## api 
-
-# 유저
-1. /sign-up (회원가입) -POST
-2. /sign-in (로그인)   -POST
-
-# 케릭터
-1. /characters/add (케릭터 생성) -POST
-2. /characters/:characterId (케릭터 삭제) -DEL
-3. /characters/:characterId (케릭터 상세 조회) -GET
-
-# 아이템
-1. /items/add (아이템 생성) -POST
-2. /items/update/:itemId (아이템 수정.) -PTCH
-3. /items/get/:item (아이템 상세 조회) -GET
-4. /items/get (아이템 목록 조회) -GET
-
-# 인벤토리
-1. /inv/:characterId (인벤토리) -GET
-2. /inv/:characterId/equip (아이템장착) -POST
-3. /inv/:characterId/unequip(아이템헤제) -DEL
-4. /inv/:characterId/equipped-items (장착한 아이템 목록) -GET
-
-# 상점
-1. /shop/sell/:characterId/:item/:count (아이템 판매) -DEL
-2. /shop/buy/:characterId (아이템 구입) -POST
-
-
-# 기타
-1. /earn-money/:characterId (게임 머니 벌기) -GET
 
 
 
-## api - body
 
-1. /sign-up (회원가입) -POST
-
-{
-	"userName": 	   "test5",
-	"password": 	   "555555",
-	"confirmPassword": "555555"
-}
-
-
-2. /sign-in (로그인)   -POST
-
-{
-	"userName": 			 "test1",
-	"password": 			 "111111"
-}
-
-
-3. /characters/add (케릭터 생성) -POST
-
-{
-	"charactersName": "황2",
-	"stats": {"health": 500, "power": 100},
-	"money": 10000
-}
-
-4. /items/add (아이템 생성) -POST
-
-{
-	"itemName": "나뭇가지",
-	"stats": 	  {"health": 20, "power": 5},
-	"price": 		1000
-}
-
-5. /inv/:characterId/equip (아이템장착) -POST
-
-{
-	"itemId" : "2"
-}
-
-6. /shop/buy/:characterId (아이템 구입)
-
-[
-	{
-		"item_code": "목검",
-		"count": 		2
-	},
-	{
-		"item_code": "철검",
-		"count": 		1
-	}
-]
