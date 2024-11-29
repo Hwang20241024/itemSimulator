@@ -156,7 +156,81 @@
 이번 프로젝트에서는 많은 휴먼 에러가 발생했습니다. API 테스트 중에도 종종 Body를 보내지 않았으면서 코드를 계속 확인하는 실수를 했습니다. 데이터베이스도 복잡해서 조금 더 시간이 있었으면 좋았을 것 같다는 생각도 들었습니다. 그럼에도 불구하고, 전체적으로는 재미있게 진행할 수 있었습니다.
 
 
+## 데이터베이스 - 현재 저장되어있는 정보
 
+# 계정 테이블 - Accounts
+|_. accountsId |_. userName |_. password |_. refreshToken |
+| 12311295-1b48-4d20-947e-472c12331b9b | test5 | $2b$10$ahvMmP0./N/aDsMpfJwTQu0uKtJrF2UcPG0JQSj.X0JEknJeSsmdu | eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6InRlc3Q1IiwiaWF0IjoxNzMyODA1NDkxLCJleHAiOjE3MzM0MTAyOTF9.V31cTIWB3Uk3A5wfd2CdgO2TEnoc1pEGikjGoW3pxdY |
+| 41e397fa-3808-4b81-8023-d8cef2f329e1 | test8 | $2b$10$LTo.IkAWrUIIi1Lv86LYmOG54WRvD5.t26Cs.g3pL5KefymhF54e. | eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6InRlc3Q4IiwiaWF0IjoxNzMyODQyMjI3LCJleHAiOjE3MzM0NDcwMjd9.h7Qo9agtvOFxkzhJ7R7o1ryrEgQl9uj_AUWFVwIqy3c |
+| 55a7ce5b-f3cd-45e1-902b-84c046ee396b | test7 | $2b$10$OS.e8UdN/a6OO0M1t259R.NjFyw5KGTz6OI8SQbaissTvE97B.mZy | eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6InRlc3Q3IiwiaWF0IjoxNzMyODQxNzA0LCJleHAiOjE3MzM0NDY1MDR9.PhPCGwTWayp0zJfxfYmj1xBM4oI9EPIl_Fkdni09yPg |
+| 5a2b9153-0354-4ca0-9bc9-b3a31f4cb6d8 | test2 | $2b$10$ALK33b7FGLtCULfY2Vl9iuM/mI4kLbjpKPu4fseLTPdx/aTLsRgBK | eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6InRlc3QyIiwiaWF0IjoxNzMyNzY2NDgzLCJleHAiOjE3MzMzNzEyODN9.wLwEbDX9FvRDgqOMK4BdLxM57kQrIY56E1HsT9Kb6Ng |
+| 83834183-4c03-4ae6-ba9b-7be6f6bfc75b | test1 | $2b$10$HXDYooPSHHfheo4XWbjfv.BvVJZqa2evnFS6/eKy7q4wDuxu4nmTS | eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6InRlc3QxIiwiaWF0IjoxNzMyNzY2NDY4LCJleHAiOjE3MzMzNzEyNjh9.RylyVGbLT3_IpaqR25p3SzCDx9oVsamMnST8DOZC8FM |
+| 89044164-7a21-465f-a9d7-a708ed2126d2 | test4 | $2b$10$Y5EswC0Z0.M2Ba8FHKdK5O8AYNG7mxPRqsfxJhmvkSYqVZT.Xz5QW | eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6InRlc3Q0IiwiaWF0IjoxNzMyODA1Mzg0LCJleHAiOjE3MzM0MTAxODR9.OoP80mEZrINlL9tbS78dpf1MGypQzvpL8FSJD7AQAic |
+| 90dd8797-fbdd-4f9a-9463-109401b3831a | test3 | $2b$10$iqo/QL8XM4kDwRpx0ot2.uMREp5nxYlFtDylbyfiNc3xW9F6r167S | eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6InRlc3QzIiwiaWF0IjoxNzMyNzY2NDk1LCJleHAiOjE3MzMzNzEyOTV9.f4lWSK7Zx3HzPzNi_4G8KWjT19mExVCjwYyQGCftH2A |
+| d82af0c8-c0fe-4ecd-99e2-162edc8a853a | test6 | $2b$10$q5/4PCDAhYDTjTllhNyj2.5KhqCQMKr1ZTwWWtPbzFXkj1NFJKVlS | eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyTmFtZSI6InRlc3Q2IiwiaWF0IjoxNzMyODQxNDI0LCJleHAiOjE3MzM0NDYyMjR9.kbMG4eIlFO92L-rfW-GYRXB7onefKIKG5z6938bVRfk |
+
+
+# 케릭터 장착 테이블 - CharacterEquippedItems
+-----------------------------------------------------------------------
+|_. itemStatsId |_. characterInventoriesId |_. characterId |_. itemId |
+-----------------------------------------------------------------------
+| 17            | 12                       | 1             | 1        |
+-----------------------------------------------------------------------
+
+# 케릭터 인벤토리 테이블 - CharacterInventories
+-----------------------------------------------------------------
+|_. characterInventoriesId |_. characterId |_. itemId |_. count |
+-----------------------------------------------------------------
+| 4 					   | 5             | 2        | 6       |
+| 5                        | 2             | 1        | 14      |
+| 6                        | 2             | 2        | 5       |
+| 12                       | 1             | 1        | 4       |
+| 13                       | 1             | 2        | 3       |
+-----------------------------------------------------------------
+
+# 케릭터 테이블 - Characters
+|_. characterId |_. accountsId |_. charactersName |_. money |_. createdAt |_. updatedAt |
+| 1 | 83834183-4c03-4ae6-ba9b-7be6f6bfc75b | apple | 1900 | 2024-11-28 04:04:32.136 | 2024-11-29 01:00:46.036 |
+| 2 | 83834183-4c03-4ae6-ba9b-7be6f6bfc75b | banana | 7500 | 2024-11-28 04:05:28.179 | 2024-11-28 14:29:22.095 |
+| 3 | 83834183-4c03-4ae6-ba9b-7be6f6bfc75b | test | 10000 | 2024-11-28 04:05:46.828 | 2024-11-28 04:05:46.828 |
+| 4 | 83834183-4c03-4ae6-ba9b-7be6f6bfc75b | test2 | 10000 | 2024-11-28 04:06:28.548 | 2024-11-28 04:06:28.548 |
+| 7 | d82af0c8-c0fe-4ecd-99e2-162edc8a853a | 스파르타01 | 10000 | 2024-11-29 00:54:05.698 | 2024-11-29 00:54:05.698 |
+| 8 | d82af0c8-c0fe-4ecd-99e2-162edc8a853a | 스파르타02 | 10000 | 2024-11-29 00:54:39.153 | 2024-11-29 00:54:39.153 |
+| 10 | 41e397fa-3808-4b81-8023-d8cef2f329e1 | 케릭터가아니다 | 10000 | 2024-11-29 01:04:12.630 | 2024-11-29 01:04:12.630 |
+| 5 | 5a2b9153-0354-4ca0-9bc9-b3a31f4cb6d8 | 황1 | 10200 | 2024-11-28 05:47:22.331 | 2024-11-28 07:30:57.081 |
+| 6 | 5a2b9153-0354-4ca0-9bc9-b3a31f4cb6d8 | 황2 | 10000 | 2024-11-28 05:47:28.908 | 2024-11-28 05:47:28.908 |
+
+# 케릭터 능력 테이블 - CharactersStats 
+|_. charactersStatsId |_. characterId |_. stats |
+| 1 | 1 | {"power": 105, "health": 520} |
+| 2 | 2 | {"power": 100, "health": 500} |
+| 3 | 3 | {"power": 100, "health": 500} |
+| 4 | 4 | {"power": 100, "health": 500} |
+| 5 | 5 | {"power": 100, "health": 500} |
+| 6 | 6 | {"power": 100, "health": 500} |
+| 7 | 7 | {"power": 100, "health": 500} |
+| 8 | 8 | {"power": 100, "health": 500} |
+| 10 | 10 | {"power": 100, "health": 500} |
+
+
+# 아이템 테이블 - Items
+|_. itemId |_. itemName |_. price |
+| 1 | 목검 | 1000 |
+| 2 | 철검 | 1000 |
+| 3 | 야구방망이 | 1000 |
+| 4 | 나뭇가지 | 1000 |
+| 5 | 장난감 | 1000 |
+| 6 | 무기수정테스트 | 1000 |
+
+
+# 아이템능력 테이블 - ItemStats
+|_. itemStatsId |_. itemId |_. stats |
+| 1 | 1 | {"power": 5, "health": 20} |
+| 2 | 2 | {"power": 5, "health": 20} |
+| 3 | 3 | {"power": 5, "health": 20} |
+| 4 | 4 | {"power": 5, "health": 20} |
+| 5 | 5 | {"power": 20, "health": 20} |
+| 6 | 6 | {"power": 20, "health": 20} |
 
 
 
