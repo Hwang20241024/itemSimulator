@@ -79,7 +79,10 @@ router.post('/sign-up', async (req, res, next) => {
     });
 
     // 6. 인메모리에 refreshTokens 추가
-    global.refreshTokens[refreshToken] = userName;
+    global.refreshTokens.push({
+      userName: userName,
+      refreshToken: refreshToken,
+    });
     
     return res.status(201).json({ message: '회원가입이 완료되었습니다.' });
 

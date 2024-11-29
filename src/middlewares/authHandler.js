@@ -30,7 +30,7 @@ export default async function (req, res, next) {
         (user) => user.userName === decodedToken.userName
       );
       console.log(isUserExist.userName);
-      console.log(isUserExist);
+      //console.log(user.userName);
 
       if (!isUserExist) {
         console.log('엑세스: ' + decodedToken.userName);
